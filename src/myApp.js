@@ -62,7 +62,7 @@ var MyLayer = cc.Layer.extend({
         // 3. add your codes below...
         // add a label shows "Hello World"
         // create and initialize a label
-        this.helloLabel = cc.LabelTTF.create("Hello World", "Arial", 38);
+        this.helloLabel = cc.LabelTTF.create("Zombie Head!", "Arial", 38);
         // position the label on the center of the screen
         this.helloLabel.setPosition(cc.p(size.width / 2, size.height - 40));
         // add the label as a child to this layer
@@ -72,9 +72,23 @@ var MyLayer = cc.Layer.extend({
         this.addChild(lazyLayer);
 
         // add "Helloworld" splash screen"
-        this.sprite = cc.Sprite.create("res/HelloWorld.png");
+        this.sprite = cc.Sprite.create("res/skull.png");
         this.sprite.setAnchorPoint(cc.p(0.5, 0.5));
         this.sprite.setPosition(cc.p(size.width / 2, size.height / 2));
+
+        var rotationAmount = 0;
+        var posx = 0;
+        this.sprite.setScale(0.10);
+        this.sprite.schedule(function()
+        {
+            this.setRotation(rotationAmount+=5);
+            if(rotationAmount > 360)
+                rotationAmount = 0;
+            this.setPosition(cc.p(posx++, this.getPositionY()));
+            if (posx > size.width) {
+                posx = 0;
+            }
+        });
 
         lazyLayer.addChild(this.sprite, 0);
 
