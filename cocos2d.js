@@ -36,7 +36,7 @@
         SingleEngineFile:'lib/Cocos2d-html5-v2.0.min.js',
         appFiles:[
             'src/resource.js',
-            'src/myApp.js'//add your own files in order here
+            'src/GameLayer.js'//add your own files in order here
         ]
     };
     window.addEventListener('DOMContentLoaded', function () {
