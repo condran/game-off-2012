@@ -27,8 +27,12 @@ var GameLayer = cc.Layer.extend({
     circle:null,
     playerSprite:null,
     gameLayer:null,
+    zombies:null,
     zombieCount:null,
     zombieMax:10,
+    canSpawnZombie:true,
+    _time:null,
+    _curTime:null,
 
     init:function () {
 
@@ -51,41 +55,40 @@ var GameLayer = cc.Layer.extend({
 
         // Add Enemies
         this.zombieCount = 0;
+        this.zombies = [];
+        for (var i=0; i < this.zombieMax; i++) {
+            this.zombies[i] = new Zombie(this);
+        }
         this.scheduleUpdate();
 
         return true;
     },
 
+    setCanSpawn:function(canSpawn) {
+        this.canSpawnZombie = canSpawn;
+    },
+
     addZombieToGameLayer:function() {
 
-        var rotationAmount = 0;
-        var posx = 0;
-        var size = cc.Director.getInstance().getWinSize();
-        var zombie = cc.Sprite.create('res/skull.png');
+        this.gameLayer.addChild(this.zombies[this.zombieCount], 0);
+        cc.log('Zombie ' + this.zombieCount + ' of ' + this.zombieMax + ' added');
+        this.zombieCount++;
 
-        zombie.setAnchorPoint(cc.p(0.5, 0.5));
-        zombie.setPosition(cc.p(size.width/2, size.height/2));
-        zombie.setScale(0.10);
-        zombie.schedule(function()
-        {
-            this.setRotation(rotationAmount+=5);
-            if(rotationAmount > 360)
-                rotationAmount = 0;
-
-            this.setPosition(cc.p(posx++, this.getPositionY()));
-            if (posx > size.width) {
-                this.removeFromParentAndCleanup();
-            }
-        });
-        this.gameLayer.addChild(zombie, 0);
     },
 
     update:function(dt) {
-        if (true) {
-            if (this.zombieCount < this.zombieMax) {
-                this.zombieCount++;
-                this.addZombieToGameLayer();
-            }
+
+        this._time++;
+
+        var minute = 0 | (this._time / 60);
+        var second = this._time % 60;
+        minute = minute > 9 ? minute : "0" + minute;
+        second = second > 9 ? second : "0" + second;
+        this._curTime = minute + ":" + second;
+
+
+        if (second == '10' && this.zombieCount < this.zombieMax) {
+            this.addZombieToGameLayer();
         }
     }
 });

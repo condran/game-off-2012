@@ -36,7 +36,8 @@
         SingleEngineFile:'lib/Cocos2d-html5-v2.0.min.js',
         appFiles:[
             'src/resource.js',
-            'src/GameLayer.js'//add your own files in order here
+            'src/Zombie.js',
+            'src/GameLayer.js'
         ]
     };
     window.addEventListener('DOMContentLoaded', function () {
