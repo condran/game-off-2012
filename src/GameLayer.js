@@ -22,6 +22,7 @@
 
 var GameLayer = cc.Layer.extend({
     isMouseDown:false,
+    _winSize:null,
     helloImg:null,
     helloLabel:null,
     circle:null,
@@ -38,20 +39,21 @@ var GameLayer = cc.Layer.extend({
 
         this._super();
 
-        var size = cc.Director.getInstance().getWinSize();
+        this._winSize = cc.Director.getInstance().getWinSize();
 
         /////////////////////////////
         // 3. add your codes below...
         // add a label shows "Hello World"
         // create and initialize a label
-        this.helloLabel = cc.LabelTTF.create("Zombie Head!", "Arial", 38);
-        // position the label on the center of the screen
-        this.helloLabel.setPosition(cc.p(size.width / 2, size.height - 40));
-        // add the label as a child to this layer
-        this.addChild(this.helloLabel, 5);
+//        this.helloLabel = cc.LabelTTF.create("Zombie Head!", "Acme", 38);
+//        this.helloLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height - 40));
+//        this.addChild(this.helloLabel, 5);
 
         this.gameLayer = new cc.LazyLayer();
         this.addChild(this.gameLayer);
+
+        // Create background
+        this.createBackground();
 
         // Add Enemies
         this.zombieCount = 0;
@@ -64,13 +66,22 @@ var GameLayer = cc.Layer.extend({
         return true;
     },
 
+    createBackground:function() {
+        this._backSky = cc.Sprite.create('res/background.jpg');
+        this._backSky.setAnchorPoint(cc.p(0, 0));
+        this._backSky.setPosition(cc.p(this._winSize.width / 2, this._winSize.height /2))
+        this._backSkyHeight = this._backSky.getContentSize().height;
+        this.gameLayer.addChild(this._backSky, -10);
+
+    },
+
     setCanSpawn:function(canSpawn) {
         this.canSpawnZombie = canSpawn;
     },
 
     addZombieToGameLayer:function() {
 
-        this.gameLayer.addChild(this.zombies[this.zombieCount], 0);
+        this.gameLayer.addChild(this.zombies[this.zombieCount], 1000);
         cc.log('Zombie ' + this.zombieCount + ' of ' + this.zombieMax + ' added');
         this.zombieCount++;
 
