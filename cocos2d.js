@@ -24,6 +24,12 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  ****************************************************************************/
+
+// Some global states & constants
+var ZH = ZH || {};
+ZH.KEYS = [];
+
+// Setup
 (function () {
     var d = document;
     var c = {
@@ -37,6 +43,7 @@
         appFiles:[
             'src/resource.js',
             'src/Zombie.js',
+            'src/Forkinator.js',
             'src/GameLayer.js'
         ]
     };

@@ -52,6 +52,9 @@ var GameLayer = cc.Layer.extend({
         this.gameLayer = new cc.LazyLayer();
         this.addChild(this.gameLayer);
 
+        this.playerSprite = new Forkinator(this);
+        this.gameLayer.addChild(this.playerSprite, 10);
+
         // Create background
         this.createBackground();
 
@@ -61,6 +64,19 @@ var GameLayer = cc.Layer.extend({
         for (var i=0; i < this.zombieMax; i++) {
             this.zombies[i] = new Zombie(this);
         }
+
+        // Enable input
+        var t = cc.config.deviceType;
+        if( t == 'browser' )  {
+            //this.setTouchEnabled(true);
+            this.setKeyboardEnabled(true);
+        }
+//        else if( t == 'desktop' ) {
+//            this.setMouseEnabled(true);
+//        } else if( t == 'mobile' ) {
+//            this.setTouchEnabled(true);
+//        }
+
         this.scheduleUpdate();
 
         return true;
@@ -81,7 +97,7 @@ var GameLayer = cc.Layer.extend({
 
     addZombieToGameLayer:function() {
 
-        this.gameLayer.addChild(this.zombies[this.zombieCount], 1000);
+        this.gameLayer.addChild(this.zombies[this.zombieCount], 10);
         cc.log('Zombie ' + this.zombieCount + ' of ' + this.zombieMax + ' added');
         this.zombieCount++;
 
@@ -101,6 +117,14 @@ var GameLayer = cc.Layer.extend({
         if (second == '10' && this.zombieCount < this.zombieMax) {
             this.addZombieToGameLayer();
         }
+    },
+
+    onKeyDown:function (e) {
+        ZH.KEYS[e] = true;
+    },
+
+    onKeyUp:function (e) {
+        ZH.KEYS[e] = false;
     }
 });
 
