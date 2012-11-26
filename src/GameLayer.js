@@ -41,10 +41,7 @@ var GameLayer = cc.Layer.extend({
 
         this._winSize = cc.Director.getInstance().getWinSize();
 
-        /////////////////////////////
-        // 3. add your codes below...
-        // add a label shows "Hello World"
-        // create and initialize a label
+//        // Score Label
 //        this.helloLabel = cc.LabelTTF.create("Zombie Head!", "Acme", 38);
 //        this.helloLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height - 40));
 //        this.addChild(this.helloLabel, 5);
@@ -83,9 +80,9 @@ var GameLayer = cc.Layer.extend({
     },
 
     createBackground:function() {
-        this._backSky = cc.Sprite.create('res/background.jpg');
+        this._backSky = cc.Sprite.create(s_NightBackground);
         this._backSky.setAnchorPoint(cc.p(0, 0));
-        this._backSky.setPosition(cc.p(this._winSize.width / 2, this._winSize.height /2))
+        //this._backSky.setPosition(cc.p(this._winSize.width / 2, this._winSize.height /2))
         this._backSkyHeight = this._backSky.getContentSize().height;
         this.gameLayer.addChild(this._backSky, -10);
 
@@ -98,7 +95,6 @@ var GameLayer = cc.Layer.extend({
     addZombieToGameLayer:function() {
 
         this.gameLayer.addChild(this.zombies[this.zombieCount], 10);
-        cc.log('Zombie ' + this.zombieCount + ' of ' + this.zombieMax + ' added');
         this.zombieCount++;
 
     },

@@ -1,12 +1,12 @@
-var s_HelloWorld = "res/HelloWorld.png";
-var s_CloseNormal = "res/CloseNormal.png";
-var s_CloseSelected = "res/CloseSelected.png";
+var s_ZombieHead = "res/skull.png";
+var s_Forkinator = "res/forkinator.png";
+var s_NightBackground = "res/background.png";
 
 var g_ressources = [
     //image
-    {type:"image", src:s_HelloWorld},
-    {type:"image", src:s_CloseNormal},
-    {type:"image", src:s_CloseSelected}
+    {type:"image", src:s_ZombieHead},
+    {type:"image", src:s_Forkinator},
+    {type:"image", src:s_NightBackground}
 
     //plist
 

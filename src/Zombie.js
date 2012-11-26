@@ -30,7 +30,7 @@ var Zombie = cc.Sprite.extend({
         var size = cc.Director.getInstance().getWinSize();
         this._gameLayer = gameLayer;
 
-        this.initWithFile('res/skull.png');
+        this.initWithFile(s_ZombieHead);
         this.setScale(0.10);
         this.setAnchorPoint(cc.p(0.5, 0.5));
         this.setPosition(cc.p(this._posX, size.height/3));

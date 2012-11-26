@@ -30,8 +30,8 @@ var Forkinator = cc.Sprite.extend({
         this._winSize = cc.Director.getInstance().getWinSize();
         this._gameLayer = gameLayer;
 
-        this.initWithFile('res/forkinator.png');
-        this.setScale(0.4);
+        this.initWithFile(s_Forkinator);
+        this.setScale(0.32);
         this.setAnchorPoint(cc.p(0.5, 0.5));
         this.pos_x = this._winSize.width/2;
         this.setPosition(cc.p(this.pos_x, this._winSize.height/10));
@@ -42,12 +42,12 @@ var Forkinator = cc.Sprite.extend({
     update:function(dt) {
         if( cc.config.deviceType == 'browser' ) {
             var pos = this.getPosition();
-            if ((ZH.KEYS[cc.KEY.w] || ZH.KEYS[cc.KEY.up]) && pos.y <= this._winSize.height) {
-                pos.y += dt * this.speed;
-            }
-            if ((ZH.KEYS[cc.KEY.s] || ZH.KEYS[cc.KEY.down]) && pos.y >= 0) {
-                pos.y -= dt * this.speed;
-            }
+//            if ((ZH.KEYS[cc.KEY.w] || ZH.KEYS[cc.KEY.up]) && pos.y <= this._winSize.height) {
+//                pos.y += dt * this.speed;
+//            }
+//            if ((ZH.KEYS[cc.KEY.s] || ZH.KEYS[cc.KEY.down]) && pos.y >= 0) {
+//                pos.y -= dt * this.speed;
+//            }
             if ((ZH.KEYS[cc.KEY.a] || ZH.KEYS[cc.KEY.left]) && pos.x >= 0) {
                 pos.x -= dt * this.speed;
             }
