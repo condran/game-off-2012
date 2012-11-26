@@ -65,7 +65,7 @@ var GameLayer = cc.Layer.extend({
         // Enable input
         var t = cc.config.deviceType;
         if( t == 'browser' )  {
-            //this.setTouchEnabled(true);
+            this.setTouchEnabled(true);
             this.setKeyboardEnabled(true);
         }
 //        else if( t == 'desktop' ) {
@@ -121,7 +121,29 @@ var GameLayer = cc.Layer.extend({
 
     onKeyUp:function (e) {
         ZH.KEYS[e] = false;
+    },
+    onTouchesBegan:function(touches, event){
+        this._isTouch = true;
+    },
+    onTouchesMoved:function (touches, event) {
+        if(this._isTouch){
+            this.processEvent(touches[0]);
+        }
+    },
+    onTouchesEnded:function(touches, event){
+        this._isTouch = false;
+    },
+    onMouseDragged:function( event ) {
+        if(this._isTouch){
+            this.processEvent( event );
+        }
+    },
+    processEvent:function( event ) {
+
     }
+
+
+
 });
 
 var MyScene = cc.Scene.extend({

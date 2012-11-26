@@ -33,22 +33,41 @@ var Zombie = cc.Sprite.extend({
         this.initWithFile(s_ZombieHead);
         this.setScale(0.10);
         this.setAnchorPoint(cc.p(0.5, 0.5));
-        this.setPosition(cc.p(this._posX, size.height/3));
+
+
+        var yfactor = size.height / 2;
+        var xfactor = size.width / 2;
+
+        var verts = [];
+        verts[0] = {x:-500.4, y:500.9 ,delay: 0.1 };
+        verts[1] = {x:-500,   y:21.9 ,delay: 0.5 };
+        verts[2] = {x:-395.4, y:21.9 ,delay: 0.5 };
+        verts[3] = {x:-253.3, y:78.1 ,delay: 1 };
+        verts[4] = {x:43.6,   y:-48.6,delay: 1 };
+        verts[5] = {x:284.0,  y:41.1 ,delay: 1 };
+        verts[6] = {x:393.4,  y:38.2 ,delay: 1 };
+        verts[7] = {x:410.4,  y:38.2 ,delay: 0.2 };
+        verts[8] = {x:500.4,  y:500.9 ,delay: 0 };
+
+        var actions= [];
+        var actIdx = 0;
+        for (var i=0; i < verts.length; i++) {
+            actions[actIdx++] = cc.MoveTo.create(verts[i].delay, cc.p(xfactor + verts[i].x, yfactor + verts[i].y));
+        }
+
+        // initial position
+        this.setPosition(cc.p(xfactor + verts[0].x - 20, yfactor + verts[0].y - 10));
+
+        var sequence = cc.Sequence.create(actions);
+        this.runAction(cc.RepeatForever.create(sequence));
 
         this.schedule(function()
         {
             this.setRotation(this._rotationAmount+=5);
             if(this._rotationAmount > 360)
                 this._rotationAmount = 0;
-
-            if (this._posX > 60) {
-                this._gameLayer.setCanSpawn(true);
-            }
-
-            this.setPosition(cc.p(this._posX++, this.getPositionY()));
-            if (this._posX > size.width) {
-                this.removeFromParentAndCleanup();
-            }
         }, 0.01, cc.REPEAT_FOREVER);
+        this.scheduleUpdate();
     }
+
 });
