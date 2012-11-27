@@ -19,21 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+var _menu = null;
 
 var GameLayer = cc.Layer.extend({
     isMouseDown:false,
     _winSize:null,
-    helloImg:null,
-    helloLabel:null,
     circle:null,
-    playerSprite:null,
+    _playerSprite:null,
     gameLayer:null,
     zombies:null,
     zombieCount:null,
     zombieMax:10,
-    canSpawnZombie:true,
     _time:null,
     _curTime:null,
+    _state:null,
 
     init:function () {
 
@@ -49,11 +48,16 @@ var GameLayer = cc.Layer.extend({
         this.gameLayer = new cc.LazyLayer();
         this.addChild(this.gameLayer);
 
-        this.playerSprite = new Forkinator(this);
-        this.gameLayer.addChild(this.playerSprite, 10);
+        this._playerSprite = new Forkinator(this);
+        this.gameLayer.addChild(this._playerSprite, 10);
+        this._playerSprite.setPosition(cc.p(-500,-500));
+
+        this._state = ZH.GAME_STATE.NEW;
 
         // Create background
         this.createBackground();
+
+        this.createPlayMenu();
 
         // Add Enemies
         this.zombieCount = 0;
@@ -67,12 +71,9 @@ var GameLayer = cc.Layer.extend({
         if( t == 'browser' )  {
             this.setTouchEnabled(true);
             this.setKeyboardEnabled(true);
+        } else if( t == 'mobile' ) {
+            this.setTouchEnabled(true);
         }
-//        else if( t == 'desktop' ) {
-//            this.setMouseEnabled(true);
-//        } else if( t == 'mobile' ) {
-//            this.setTouchEnabled(true);
-//        }
 
         this.scheduleUpdate();
 
@@ -88,8 +89,20 @@ var GameLayer = cc.Layer.extend({
 
     },
 
-    setCanSpawn:function(canSpawn) {
-        this.canSpawnZombie = canSpawn;
+    createPlayMenu:function() {
+        var newGame = cc.MenuItemImage.create(s_NewGameNormal, s_NewGameSelected, this.gameLayer, this.onNewGame);
+
+        _menu = cc.Menu.create(newGame);
+        _menu.alignItemsVerticallyWithPadding(10);
+        _menu.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2));
+        this.gameLayer.addChild(_menu, 10);
+
+        //this.schedule(this.update, 0.1);
+    },
+
+    onNewGame:function() {
+        _menu.setVisible(false);
+        ZH._currentGameState = ZH.GAME_STATE.PLAYING;
     },
 
     addZombieToGameLayer:function() {
@@ -109,10 +122,16 @@ var GameLayer = cc.Layer.extend({
         second = second > 9 ? second : "0" + second;
         this._curTime = minute + ":" + second;
 
-
-        if (second == '10' && this.zombieCount < this.zombieMax) {
-            this.addZombieToGameLayer();
+        if (ZH._currentGameState == ZH.GAME_STATE.PLAYING) {
+            if (this._playerSprite.getPositionX() == -500) {
+                this._playerSprite.setDefaultPosition();
+            }
+            // add zombies
+            if (second == '10' && this.zombieCount < this.zombieMax) {
+                this.addZombieToGameLayer();
+            }
         }
+
     },
 
     onKeyDown:function (e) {

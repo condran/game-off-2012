@@ -57,6 +57,10 @@ var Forkinator = cc.Sprite.extend({
             this.setPosition( pos );
         }
 
+    },
 
+    setDefaultPosition:function() {
+        this.pos_x = this._winSize.width/2;
+        this.setPosition(cc.p(this.pos_x, this._winSize.height/10));
     }
 });

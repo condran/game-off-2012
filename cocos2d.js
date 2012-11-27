@@ -29,6 +29,14 @@
 var ZH = ZH || {};
 ZH.KEYS = [];
 
+ZH.GAME_STATE = {
+    NEW:0,
+    PLAYING:1,
+    GAME_OVER:2
+};
+
+ZH._currentGameState = ZH.GAME_STATE.NEW;
+
 // Setup
 (function () {
     var d = document;
