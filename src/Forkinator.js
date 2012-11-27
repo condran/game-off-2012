@@ -54,6 +54,9 @@ var Forkinator = cc.Sprite.extend({
             if ((ZH.KEYS[cc.KEY.d] || ZH.KEYS[cc.KEY.right]) && pos.x <= this._winSize.width) {
                 pos.x += dt * this.speed;
             }
+            if (ZH.KEYS[cc.KEY.space]) {
+                this.fireFork();
+            }
             this.setPosition( pos );
         }
 
@@ -62,5 +65,18 @@ var Forkinator = cc.Sprite.extend({
     setDefaultPosition:function() {
         this.pos_x = this._winSize.width/2;
         this.setPosition(cc.p(this.pos_x, this._winSize.height/10));
+    },
+
+    fireFork:function() {
+        var fork = cc.Sprite.create(s_Fork);
+        var pos = this.getPosition();
+        var delay = 4 * Math.random();
+        var curX = this.getPositionX();
+
+        fork.setPosition(pos);
+        fork.setScale(0.3);
+        var action = cc.MoveTo.create(delay, cc.p(curX, 500));
+        fork.runAction(action);
+        this._gameLayer.addChild(fork);
     }
 });
