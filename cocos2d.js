@@ -44,6 +44,7 @@ ZH.SPRITE_STATE = {
 ZH.ZOMBIES = [];
 ZH.FORKS = [];
 ZH._currentGameState = ZH.GAME_STATE.NEW;
+ZH._forkFired = false;
 
 // Setup
 (function () {

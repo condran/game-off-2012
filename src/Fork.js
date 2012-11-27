@@ -32,7 +32,7 @@ var Fork = cc.Sprite.extend({
         this.initWithFile(s_Fork);
         this.setScale(0.3);
 
-        var delay = 4 * Math.random();
+        var delay = 1 + (2 * Math.random());
         var curX = startPos.x;
 
         this.setPosition(startPos);

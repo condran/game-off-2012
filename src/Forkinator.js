@@ -24,6 +24,7 @@ var Forkinator = cc.Sprite.extend({
     _gameLayer:null,
     _pos_x:null,
     _winSize:null,
+    forkFired:false,
     speed:100,
 
     ctor:function(gameLayer) {
@@ -54,7 +55,7 @@ var Forkinator = cc.Sprite.extend({
             if ((ZH.KEYS[cc.KEY.d] || ZH.KEYS[cc.KEY.right]) && pos.x <= this._winSize.width) {
                 pos.x += dt * this.speed;
             }
-            if (ZH.KEYS[cc.KEY.space]) {
+            if (ZH.KEYS[cc.KEY.space] && !ZH.forkFired) {
                 this.fireFork();
             }
             this.setPosition( pos );
@@ -70,9 +71,8 @@ var Forkinator = cc.Sprite.extend({
     fireFork:function() {
         var pos = this.getPosition();
         var fork = new Fork(this._gameLayer, pos);
-
         ZH.FORKS.push(fork);
-
+        ZH.forkFired = true;
         this._gameLayer.addChild(fork);
     }
 });

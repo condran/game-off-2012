@@ -127,6 +127,12 @@ var GameLayer = cc.Layer.extend({
             if (this._playerSprite.getPositionX() == -500) {
                 this._playerSprite.setDefaultPosition();
             }
+            // fire rhythm
+            if (second == '20') {
+                ZH.forkFired = false;
+            }
+            // check collisions
+
             // add zombies
             if (second == '10' && this.zombieCount < this.zombieMax) {
                 this.addZombieToGameLayer();
