@@ -106,9 +106,10 @@ var GameLayer = cc.Layer.extend({
     },
 
     addZombieToGameLayer:function() {
-
-        this.gameLayer.addChild(this.zombies[this.zombieCount], 10);
+        var zombie = this.zombies[this.zombieCount];
+        this.gameLayer.addChild(zombie, 10);
         this.zombieCount++;
+        ZH.ZOMBIES.push(zombie);
 
     },
 

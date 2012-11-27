@@ -35,6 +35,14 @@ ZH.GAME_STATE = {
     GAME_OVER:2
 };
 
+ZH.SPRITE_STATE = {
+    IDLE:0,
+    ACTIVE:1,
+    DEAD:2
+};
+
+ZH.ZOMBIES = [];
+ZH.FORKS = [];
 ZH._currentGameState = ZH.GAME_STATE.NEW;
 
 // Setup
@@ -51,6 +59,7 @@ ZH._currentGameState = ZH.GAME_STATE.NEW;
         appFiles:[
             'src/resource.js',
             'src/Zombie.js',
+            'src/Fork.js',
             'src/Forkinator.js',
             'src/GameLayer.js'
         ]

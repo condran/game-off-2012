@@ -68,6 +68,13 @@ var Zombie = cc.Sprite.extend({
                 this._rotationAmount = 0;
         }, 0.01, cc.REPEAT_FOREVER);
         this.scheduleUpdate();
+    },
+
+    collisionRect:function(){
+        var p = this.getPosition();
+        var a = this.getContentSize();
+        var r = new cc.rect(p.x - a.width/2, p.y - a.height/2, a.width, a.height/2);
+        return r;
     }
 
 });

@@ -17,6 +17,18 @@ h1 {
     font-family: acme, Arial;
 }
 
+#instructions {
+    width: 800px;
+    padding-top: 30px;
+}
+
+#instructions span {
+    display: inline-block;
+    text-align: center;
+    width: 260px;
+    padding: 2px;
+}
+
 #footer {
     padding-top: 50px;
     font-size: 80%;

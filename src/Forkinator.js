@@ -68,15 +68,11 @@ var Forkinator = cc.Sprite.extend({
     },
 
     fireFork:function() {
-        var fork = cc.Sprite.create(s_Fork);
         var pos = this.getPosition();
-        var delay = 4 * Math.random();
-        var curX = this.getPositionX();
+        var fork = new Fork(this._gameLayer, pos);
 
-        fork.setPosition(pos);
-        fork.setScale(0.3);
-        var action = cc.MoveTo.create(delay, cc.p(curX, 500));
-        fork.runAction(action);
+        ZH.FORKS.push(fork);
+
         this._gameLayer.addChild(fork);
     }
 });
