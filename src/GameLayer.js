@@ -1,6 +1,8 @@
 /*
  * Copyright © 2012 Paul Condran
  *
+ * http://github.com/condran
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -29,7 +31,7 @@ var GameLayer = cc.Layer.extend({
     gameLayer:null,
     zombies:null,
     zombieCount:null,
-    zombieMax:10,
+    zombieMax:15,
     _time:null,
     _curTime:null,
     _state:null,
@@ -107,10 +109,10 @@ var GameLayer = cc.Layer.extend({
 
     addZombieToGameLayer:function() {
         var zombie = this.zombies[this.zombieCount];
+        zombie.active();
         this.gameLayer.addChild(zombie, 10);
         this.zombieCount++;
         ZH.ZOMBIES.push(zombie);
-
     },
 
     update:function(dt) {
@@ -128,10 +130,11 @@ var GameLayer = cc.Layer.extend({
                 this._playerSprite.setDefaultPosition();
             }
             // fire rhythm
-            if (second == '20') {
+            if (second % 20 == 0) {
                 ZH.forkFired = false;
             }
             // check collisions
+            this.processCollisions();
 
             // add zombies
             if (second == '10' && this.zombieCount < this.zombieMax) {
@@ -139,6 +142,26 @@ var GameLayer = cc.Layer.extend({
             }
         }
 
+    },
+
+    processCollisions:function() {
+        var enemy;
+        for (var i=0; i < ZH.ZOMBIES.length; i++) {
+            enemy = ZH.ZOMBIES[i];
+            for (var j=0; j < ZH.FORKS.length; j++) {
+                var fork = ZH.FORKS[j];
+                var r1 = enemy.collisionRect();
+                var r2 = fork.collisionRect();
+                if (cc.rectIntersectsRect(r1, r2)) {
+                    enemy.hit();
+                    fork.destroy();
+                    this.removeChild(fork, true);
+                    // remove from globals
+                    ZH.FORKS.splice(j,1);
+                    ZH.ZOMBIES.splice(i,1);
+                }
+            }
+        }
     },
 
     onKeyDown:function (e) {

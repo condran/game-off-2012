@@ -1,6 +1,8 @@
 /*
  * Copyright © 2012 Paul Condran
  *
+ * http://github.com/condran
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -30,7 +32,7 @@ var Fork = cc.Sprite.extend({
         this._gameLayer = gameLayer;
 
         this.initWithFile(s_Fork);
-        this.setScale(0.3);
+        //this.setScale(0.3);
 
         var delay = 1 + (2 * Math.random());
         var curX = startPos.x;
@@ -43,9 +45,20 @@ var Fork = cc.Sprite.extend({
         this.scheduleUpdate();
     },
 
+    destroy:function() {
+        var pos = this.getPosition();
+        var hitEffect = cc.ParticleSystemQuad.create(s_ZombieHit_plist);
+        hitEffect.stopSystem();
+        this._gameLayer.addChild(hitEffect, 10);
+
+        hitEffect.setPosition(pos);
+        hitEffect.resetSystem();
+    },
+
     collisionRect:function() {
         var p = this.getPosition();
-        return cc.rect(p.x - 3, p.y - 3, 6, 6);
+        var a = this.getContentSize();
+        return cc.rect(p.x, p.y, a.width-4, a.height-4);
     }
 
 });

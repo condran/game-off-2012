@@ -50,13 +50,13 @@ ZH._forkFired = false;
 (function () {
     var d = document;
     var c = {
-        COCOS2D_DEBUG:2, //0 to turn debug off, 1 for basic debug, and 2 for full debug
+        COCOS2D_DEBUG:0, //0 to turn debug off, 1 for basic debug, and 2 for full debug
         box2d:false,
-        showFPS:true,
+        showFPS:false,
         frameRate:60,
         tag:'gameCanvas', //the dom element to run cocos2d on
-        //engineDir:'cocos2d/',
-        SingleEngineFile:'lib/Cocos2d-html5-v2.0.min.js',
+        engineDir:'cocos2d/',
+        //SingleEngineFile:'lib/Cocos2d-html5-v2.0.min.js',
         appFiles:[
             'src/resource.js',
             'src/Zombie.js',

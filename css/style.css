@@ -1,5 +1,5 @@
 body {
-    background: #111 url('robots.png') repeat;
+    background: #111 url('../res/robots.png') repeat;
     color: #ddd;
     font-family: Helvetica, Arial;
     min-width: 450px;

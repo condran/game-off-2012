@@ -5,6 +5,8 @@ var s_NightBackground = "res/background.png";
 var s_NewGameNormal = "res/new_game_normal.png";
 var s_NewGameSelected = "res/new_game_pressed.png";
 
+var s_ZombieHit_plist = "res/ZombieHit.plist";
+
 var g_resources = [
     //image
     {type:"image", src:s_ZombieHead},
@@ -12,10 +14,10 @@ var g_resources = [
     {type:"image", src:s_Fork},
     {type:"image", src:s_NightBackground},
     {type:"image", src:s_NewGameNormal},
-    {type:"image", src:s_NewGameSelected}
+    {type:"image", src:s_NewGameSelected},
 
     //plist
-
+    {type:"plist", src:s_ZombieHit_plist},
     //fnt
 
     //tmx

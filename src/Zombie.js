@@ -1,6 +1,8 @@
 /*
  * Copyright © 2012 Paul Condran
  *
+ * http://github.com/condran
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -23,6 +25,7 @@
 var Zombie = cc.Sprite.extend({
     _gameLayer:null,
     _posX:0,
+    _state:null,
     _rotationAmount:0,
 
     ctor:function(gameLayer) {
@@ -31,9 +34,10 @@ var Zombie = cc.Sprite.extend({
         this._gameLayer = gameLayer;
 
         this.initWithFile(s_ZombieHead);
-        this.setScale(0.10);
+        //this.setScale(0.10);
         this.setAnchorPoint(cc.p(0.5, 0.5));
 
+        this._state = ZH.SPRITE_STATE.IDLE;
 
         var yfactor = size.height / 2;
         var xfactor = size.width / 2;
@@ -68,6 +72,26 @@ var Zombie = cc.Sprite.extend({
                 this._rotationAmount = 0;
         }, 0.01, cc.REPEAT_FOREVER);
         this.scheduleUpdate();
+    },
+
+    hit:function() {
+        if (this._state == ZH.SPRITE_STATE.ACTIVE) {
+            this._state = ZH.SPRITE_STATE.DEAD;
+            this.stopAllActions();
+            var actions = [];
+            actions[0] = cc.FadeOut.create();
+            actions[1] = cc.CallFunc.create(this.destroy);
+            this.runAction(cc.Sequence.create(actions));
+        }
+    },
+
+    active:function() {
+        this._state = ZH.SPRITE_STATE.ACTIVE;
+    },
+    destroy:function() {
+        this._state = ZH.SPRITE_STATE.DEAD;
+        cc.ArrayRemoveObject(ZH.ZOMBIES,this);
+        this.removeFromParentAndCleanup();
     },
 
     collisionRect:function(){
