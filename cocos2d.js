@@ -38,13 +38,17 @@ ZH.GAME_STATE = {
 ZH.SPRITE_STATE = {
     IDLE:0,
     ACTIVE:1,
-    DEAD:2
+    DYING:2,
+    DEAD:3,
+    OFFSCREEN:4
 };
 
 ZH.ZOMBIES = [];
 ZH.FORKS = [];
 ZH._currentGameState = ZH.GAME_STATE.NEW;
 ZH._forkFired = false;
+ZH._forkCache = 20;
+ZH._forksAway = 0;
 
 // Setup
 (function () {
@@ -52,7 +56,7 @@ ZH._forkFired = false;
     var c = {
         COCOS2D_DEBUG:0, //0 to turn debug off, 1 for basic debug, and 2 for full debug
         box2d:false,
-        showFPS:false,
+        showFPS:true,
         frameRate:60,
         tag:'gameCanvas', //the dom element to run cocos2d on
         engineDir:'cocos2d/',

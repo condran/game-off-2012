@@ -26,12 +26,13 @@ var _menu = null;
 var GameLayer = cc.Layer.extend({
     isMouseDown:false,
     _winSize:null,
-    circle:null,
     _playerSprite:null,
-    gameLayer:null,
-    zombies:null,
-    zombieCount:null,
-    zombieMax:15,
+    _forksLabel:null,
+    _zombiesLabel:null,
+    _gameLayer:null,
+    _zombies:null,
+    _zombieCount:null,
+    _zombieMax:15,
     _time:null,
     _curTime:null,
     _state:null,
@@ -41,32 +42,38 @@ var GameLayer = cc.Layer.extend({
         this._super();
 
         this._winSize = cc.Director.getInstance().getWinSize();
+        this._state = ZH.GAME_STATE.NEW;
 
-//        // Score Label
-//        this.helloLabel = cc.LabelTTF.create("Zombie Head!", "Acme", 38);
-//        this.helloLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height - 40));
-//        this.addChild(this.helloLabel, 5);
+        // Main game layer
+        this._gameLayer = new cc.LazyLayer();
+        this.addChild(this._gameLayer);
 
-        this.gameLayer = new cc.LazyLayer();
-        this.addChild(this.gameLayer);
+        // Fork cache count
+        this._forksLabel = cc.LabelTTF.create("Forks: " + ZH._forkCache, "Acme", 25);
+        this._forksLabel.setPosition(cc.p(715, 425));
+        this._gameLayer.addChild(this._forksLabel, 100);
 
-        this._playerSprite = new Forkinator(this);
-        this.gameLayer.addChild(this._playerSprite, 10);
+        // Zombie head count
+        this._zombiesLabel = cc.LabelTTF.create("Zombies: " + ZH.ZOMBIES.length, "Acme", 25);
+        this._zombiesLabel.setPosition(cc.p(100, 425));
+        this._gameLayer.addChild(this._zombiesLabel, 100);
+
+        // the Forkinator!
+        this._playerSprite = new Forkinator(this._gameLayer);
+        this._gameLayer.addChild(this._playerSprite, 10);
         this._playerSprite.setPosition(cc.p(-500,-500));
 
-        this._state = ZH.GAME_STATE.NEW;
+        // Add Enemies
+        this._zombieCount = 0;
+        this._zombies = [];
+        for (var i=0; i < this._zombieMax; i++) {
+            this._zombies[i] = new Zombie(this);
+        }
 
         // Create background
         this.createBackground();
 
         this.createPlayMenu();
-
-        // Add Enemies
-        this.zombieCount = 0;
-        this.zombies = [];
-        for (var i=0; i < this.zombieMax; i++) {
-            this.zombies[i] = new Zombie(this);
-        }
 
         // Enable input
         var t = cc.config.deviceType;
@@ -85,33 +92,43 @@ var GameLayer = cc.Layer.extend({
     createBackground:function() {
         this._backSky = cc.Sprite.create(s_NightBackground);
         this._backSky.setAnchorPoint(cc.p(0, 0));
-        //this._backSky.setPosition(cc.p(this._winSize.width / 2, this._winSize.height /2))
         this._backSkyHeight = this._backSky.getContentSize().height;
-        this.gameLayer.addChild(this._backSky, -10);
+        this._gameLayer.addChild(this._backSky, -10);
 
     },
 
     createPlayMenu:function() {
-        var newGame = cc.MenuItemImage.create(s_NewGameNormal, s_NewGameSelected, this.gameLayer, this.onNewGame);
+        var newGame = cc.MenuItemImage.create(s_NewGameNormal, s_NewGameSelected, this, 'onNewGame');
 
         _menu = cc.Menu.create(newGame);
         _menu.alignItemsVerticallyWithPadding(10);
         _menu.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2));
-        this.gameLayer.addChild(_menu, 10);
-
-        //this.schedule(this.update, 0.1);
+        this._gameLayer.addChild(_menu, 500);
     },
 
     onNewGame:function() {
-        _menu.setVisible(false);
+        var i;
+        for (i=0; i < ZH.ZOMBIES.length; i++) {
+            var zombie = ZH.ZOMBIES[i];
+            zombie.destroy();
+        }
+        _menu.runAction(cc.FadeOut.create(0.5));
         ZH._currentGameState = ZH.GAME_STATE.PLAYING;
+        ZH._forkCache =  20;
+        ZH._forkFired = false;
+        ZH._forksAway = 0;
+        this._zombieCount = 0;
+        for (i=0; i < this._zombieMax; i++) {
+            this._zombies[i].newGame();
+        }
+        this._playerSprite.newGame();
     },
 
     addZombieToGameLayer:function() {
-        var zombie = this.zombies[this.zombieCount];
+        var zombie = this._zombies[this._zombieCount];
         zombie.active();
-        this.gameLayer.addChild(zombie, 10);
-        this.zombieCount++;
+        this._gameLayer.addChild(zombie, 10);
+        this._zombieCount++;
         ZH.ZOMBIES.push(zombie);
     },
 
@@ -126,18 +143,34 @@ var GameLayer = cc.Layer.extend({
         this._curTime = minute + ":" + second;
 
         if (ZH._currentGameState == ZH.GAME_STATE.PLAYING) {
-            if (this._playerSprite.getPositionX() == -500) {
+            if (this._playerSprite.getPositionX() == -500 && this._playerSprite.isActive()) {
                 this._playerSprite.setDefaultPosition();
             }
+
+            if (this._playerSprite.isOffscreen()) {
+                ZH._currentGameState = ZH.GAME_STATE.GAME_OVER;
+                var i;
+                for (i=0; i < ZH.ZOMBIES.length; i++) {
+                    var zombie = ZH.ZOMBIES[i];
+                    zombie.destroy();
+                    this._gameLayer.removeChild(zombie);
+                }
+                _menu.runAction(cc.FadeIn.create(0.5));
+            }
+
             // fire rhythm
             if (second % 20 == 0) {
                 ZH.forkFired = false;
             }
+
+            this._forksLabel.setString("Forks: " + ZH._forkCache);
+            this._zombiesLabel.setString("Zombies: " + ZH.ZOMBIES.length);
+
             // check collisions
             this.processCollisions();
 
             // add zombies
-            if (second == '10' && this.zombieCount < this.zombieMax) {
+            if (second == '10' && this._zombieCount < this._zombieMax) {
                 this.addZombieToGameLayer();
             }
         }
@@ -155,7 +188,8 @@ var GameLayer = cc.Layer.extend({
                 if (cc.rectIntersectsRect(r1, r2)) {
                     enemy.hit();
                     fork.destroy();
-                    this.removeChild(fork, true);
+                    this._gameLayer.removeChild(fork, true);
+                    this._gameLayer.removeChild(enemy, true);
                     // remove from globals
                     ZH.FORKS.splice(j,1);
                     ZH.ZOMBIES.splice(i,1);
@@ -170,6 +204,9 @@ var GameLayer = cc.Layer.extend({
 
     onKeyUp:function (e) {
         ZH.KEYS[e] = false;
+        if (e == cc.KEY.space) {
+            ZH._forksAway++;
+        }
     },
     onTouchesBegan:function(touches, event){
         this._isTouch = true;

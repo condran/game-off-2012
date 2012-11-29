@@ -25,20 +25,55 @@
 var Zombie = cc.Sprite.extend({
     _gameLayer:null,
     _posX:0,
-    _state:null,
+    _state:ZH.SPRITE_STATE.IDLE,
     _rotationAmount:0,
 
     ctor:function(gameLayer) {
 
-        var size = cc.Director.getInstance().getWinSize();
         this._gameLayer = gameLayer;
 
         this.initWithFile(s_ZombieHead);
         //this.setScale(0.10);
         this.setAnchorPoint(cc.p(0.5, 0.5));
+        this.setPosition(cc.p(-550,-550));
 
+        this.schedule(function()
+        {
+            this.setRotation(this._rotationAmount+=5);
+            if(this._rotationAmount > 360)
+                this._rotationAmount = 0;
+        }, 0.01, cc.REPEAT_FOREVER);
+        this.scheduleUpdate();
+    },
+
+    hit:function() {
+        if (this._state == ZH.SPRITE_STATE.ACTIVE) {
+            this._state = ZH.SPRITE_STATE.DEAD;
+            //ZH._forkCache++;
+            this.stopAllActions();
+            var actions = [];
+            actions[0] = cc.FadeOut.create();
+            actions[1] = cc.CallFunc.create(this, this.destroy);
+            this.runAction(cc.Sequence.create(actions));
+        }
+    },
+
+    active:function() {
+        this._state = ZH.SPRITE_STATE.ACTIVE;
+    },
+    destroy:function() {
+        this._state = ZH.SPRITE_STATE.DEAD;
+        this.setPosition(cc.p(-500, -500));
+        this.runAction(cc.FadeIn.create(0.1));
+        cc.ArrayRemoveObject(ZH.ZOMBIES,this);
+        this.removeFromParentAndCleanup();
+    },
+
+    newGame:function() {
         this._state = ZH.SPRITE_STATE.IDLE;
+        var size = cc.Director.getInstance().getWinSize();
 
+        this.stopAllActions();
         var yfactor = size.height / 2;
         var xfactor = size.width / 2;
 
@@ -64,34 +99,6 @@ var Zombie = cc.Sprite.extend({
 
         var sequence = cc.Sequence.create(actions);
         this.runAction(cc.RepeatForever.create(sequence));
-
-        this.schedule(function()
-        {
-            this.setRotation(this._rotationAmount+=5);
-            if(this._rotationAmount > 360)
-                this._rotationAmount = 0;
-        }, 0.01, cc.REPEAT_FOREVER);
-        this.scheduleUpdate();
-    },
-
-    hit:function() {
-        if (this._state == ZH.SPRITE_STATE.ACTIVE) {
-            this._state = ZH.SPRITE_STATE.DEAD;
-            this.stopAllActions();
-            var actions = [];
-            actions[0] = cc.FadeOut.create();
-            actions[1] = cc.CallFunc.create(this.destroy);
-            this.runAction(cc.Sequence.create(actions));
-        }
-    },
-
-    active:function() {
-        this._state = ZH.SPRITE_STATE.ACTIVE;
-    },
-    destroy:function() {
-        this._state = ZH.SPRITE_STATE.DEAD;
-        cc.ArrayRemoveObject(ZH.ZOMBIES,this);
-        this.removeFromParentAndCleanup();
     },
 
     collisionRect:function(){

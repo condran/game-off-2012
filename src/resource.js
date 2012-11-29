@@ -6,6 +6,7 @@ var s_NewGameNormal = "res/new_game_normal.png";
 var s_NewGameSelected = "res/new_game_pressed.png";
 
 var s_ZombieHit_plist = "res/ZombieHit.plist";
+var s_ForkinatorDead_plist = "res/ForkinatorDead.plist";
 
 var g_resources = [
     //image
@@ -18,6 +19,7 @@ var g_resources = [
 
     //plist
     {type:"plist", src:s_ZombieHit_plist},
+    {type:"plist", src:s_ForkinatorDead_plist},
     //fnt
 
     //tmx

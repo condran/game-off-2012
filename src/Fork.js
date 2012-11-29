@@ -39,8 +39,11 @@ var Fork = cc.Sprite.extend({
 
         this.setPosition(startPos);
 
-        var action = cc.MoveTo.create(delay, cc.p(curX, 500));
-        this.runAction(action);
+        var actions = [];
+        actions[0] = cc.MoveTo.create(delay, cc.p(curX, 500));
+        actions[1] = cc.CallFunc.create(this, this.removeFork);
+
+        this.runAction(cc.Sequence.create(actions));
 
         this.scheduleUpdate();
     },
@@ -50,9 +53,19 @@ var Fork = cc.Sprite.extend({
         var hitEffect = cc.ParticleSystemQuad.create(s_ZombieHit_plist);
         hitEffect.stopSystem();
         this._gameLayer.addChild(hitEffect, 10);
-
         hitEffect.setPosition(pos);
         hitEffect.resetSystem();
+        var actions = [];
+        actions[0] = cc.DelayTime.create(2.0);
+        actions[1] = cc.CallFunc.create(this, function() {
+            this._gameLayer.removeChild(hitEffect);
+        })
+        this.runAction(cc.Sequence.create(actions));
+    },
+
+    removeFork:function() {
+        cc.ArrayRemoveObject(ZH.FORKS, this);
+        this._gameLayer.removeChild(this, true);
     },
 
     collisionRect:function() {

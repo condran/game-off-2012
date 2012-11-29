@@ -26,8 +26,9 @@ var Forkinator = cc.Sprite.extend({
     _gameLayer:null,
     _pos_x:null,
     _winSize:null,
-    forkFired:false,
+    state:ZH.SPRITE_STATE.IDLE,
     speed:100,
+    hitEffect:null,
 
     ctor:function(gameLayer) {
         this._winSize = cc.Director.getInstance().getWinSize();
@@ -38,31 +39,51 @@ var Forkinator = cc.Sprite.extend({
         this.setAnchorPoint(cc.p(0.5, 0.5));
         this.pos_x = this._winSize.width/2;
         this.setPosition(cc.p(this.pos_x, this._winSize.height/10));
+        this.state = ZH.SPRITE_STATE.ACTIVE;
 
         this.scheduleUpdate();
     },
 
     update:function(dt) {
-        if( cc.config.deviceType == 'browser' ) {
+
+        if (this.state == ZH.SPRITE_STATE.DYING) {
+            this.state = ZH.SPRITE_STATE.DEAD;
+
             var pos = this.getPosition();
-//            if ((ZH.KEYS[cc.KEY.w] || ZH.KEYS[cc.KEY.up]) && pos.y <= this._winSize.height) {
-//                pos.y += dt * this.speed;
-//            }
-//            if ((ZH.KEYS[cc.KEY.s] || ZH.KEYS[cc.KEY.down]) && pos.y >= 0) {
-//                pos.y -= dt * this.speed;
-//            }
+            this.hitEffect = cc.ParticleSystemQuad.create(s_ForkinatorDead_plist);
+            this.hitEffect.setPosition(pos);
+            this._gameLayer.addChild(this.hitEffect, 10);
+
+            var actions = [];
+            actions[0] = cc.DelayTime.create(3.0);
+            actions[2] = cc.FadeOut.create(1.0);
+            actions[3] = cc.CallFunc.create(this, this.removeEffect);
+            this.runAction(cc.Sequence.create(actions));
+        }
+
+        if( cc.config.deviceType == 'browser' && this.state == ZH.SPRITE_STATE.ACTIVE) {
+            var pos = this.getPosition();
             if ((ZH.KEYS[cc.KEY.a] || ZH.KEYS[cc.KEY.left]) && pos.x >= 0) {
                 pos.x -= dt * this.speed;
             }
             if ((ZH.KEYS[cc.KEY.d] || ZH.KEYS[cc.KEY.right]) && pos.x <= this._winSize.width) {
                 pos.x += dt * this.speed;
             }
-            if (ZH.KEYS[cc.KEY.space] && !ZH.forkFired) {
+            if (ZH._forksAway > 0) {
                 this.fireFork();
+                if (ZH._forkCache == 0 && ZH.FORKS.length == 0 && this.state == ZH.SPRITE_STATE.ACTIVE) {
+                    this.state = ZH.SPRITE_STATE.DYING;
+                }
             }
             this.setPosition( pos );
         }
 
+    },
+
+    removeEffect:function() {
+        this.setPosition(cc.p(-500, -500));
+        this._gameLayer.removeChild(this.hitEffect);
+        this.state = ZH.SPRITE_STATE.OFFSCREEN;
     },
 
     setDefaultPosition:function() {
@@ -70,11 +91,34 @@ var Forkinator = cc.Sprite.extend({
         this.setPosition(cc.p(this.pos_x, this._winSize.height/10));
     },
 
+    isActive:function() {
+        return this.state == ZH.SPRITE_STATE.ACTIVE;
+    },
+
+    isDead:function() {
+        return this.state == ZH.SPRITE_STATE.DEAD;
+    },
+
+    isOffscreen:function() {
+        return this.state == ZH.SPRITE_STATE.OFFSCREEN;
+    },
+
+    newGame:function() {
+        this.runAction(cc.FadeIn.create(0.5));
+        this.pos_x = this._winSize.width/2;
+        this.setPosition(cc.p(this.pos_x, this._winSize.height/10));
+        this.state = ZH.SPRITE_STATE.ACTIVE;
+    },
+
     fireFork:function() {
-        var pos = this.getPosition();
-        var fork = new Fork(this._gameLayer, pos);
-        ZH.FORKS.push(fork);
-        ZH.forkFired = true;
-        this._gameLayer.addChild(fork);
+        if (ZH._forkCache > 0) {
+            var pos = this.getPosition();
+            var fork = new Fork(this._gameLayer, pos);
+            ZH.FORKS.push(fork);
+            ZH.forkFired = true;
+            ZH._forkCache--;
+            ZH._forksAway--;
+            this._gameLayer.addChild(fork);
+        }
     }
 });
