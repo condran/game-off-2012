@@ -29,6 +29,7 @@ var GameLayer = cc.Layer.extend({
     _playerSprite:null,
     _forksLabel:null,
     _zombiesLabel:null,
+    _gameOverLabel:null,
     _gameLayer:null,
     _zombies:null,
     _zombieCount:null,
@@ -57,6 +58,10 @@ var GameLayer = cc.Layer.extend({
         this._zombiesLabel = cc.LabelTTF.create("Zombies: " + ZH.ZOMBIES.length, "Acme", 25);
         this._zombiesLabel.setPosition(cc.p(100, 425));
         this._gameLayer.addChild(this._zombiesLabel, 100);
+
+        this._gameOverLabel = cc.LabelTTF.create("Game Over!", "Acme", 60);
+        this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, -500));
+        this._gameLayer.addChild(this._gameOverLabel);
 
         // the Forkinator!
         this._playerSprite = new Forkinator(this._gameLayer);
@@ -112,6 +117,8 @@ var GameLayer = cc.Layer.extend({
             var zombie = ZH.ZOMBIES[i];
             zombie.destroy();
         }
+        this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, -500));
+        this._gameOverLabel.runAction(cc.FadeOut.create(0.5));
         _menu.runAction(cc.FadeOut.create(0.5));
         ZH._currentGameState = ZH.GAME_STATE.PLAYING;
         ZH._forkCache =  20;
@@ -155,6 +162,17 @@ var GameLayer = cc.Layer.extend({
                     zombie.destroy();
                     this._gameLayer.removeChild(zombie);
                 }
+                this._gameOverLabel.setString("You Lose!");
+                this._gameOverLabel.runAction(cc.FadeIn.create(0.9));
+                this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2 + 100));
+                _menu.runAction(cc.FadeIn.create(0.5));
+            }
+
+            if(ZH._forkCache > 0 && ZH.ZOMBIES.length == 0 && this._zombieCount == this._zombieMax) {
+                this._gameOverLabel.setString("You Win!");
+                this._gameOverLabel.runAction(cc.FadeIn.create(0.9));
+                this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2 + 100));
+                ZH._currentGameState = ZH.GAME_STATE.GAME_OVER;
                 _menu.runAction(cc.FadeIn.create(0.5));
             }
 

@@ -37,13 +37,6 @@ var Zombie = cc.Sprite.extend({
         this.setAnchorPoint(cc.p(0.5, 0.5));
         this.setPosition(cc.p(-550,-550));
 
-        this.schedule(function()
-        {
-            this.setRotation(this._rotationAmount+=5);
-            if(this._rotationAmount > 360)
-                this._rotationAmount = 0;
-        }, 0.01, cc.REPEAT_FOREVER);
-        this.scheduleUpdate();
     },
 
     hit:function() {
@@ -99,6 +92,16 @@ var Zombie = cc.Sprite.extend({
 
         var sequence = cc.Sequence.create(actions);
         this.runAction(cc.RepeatForever.create(sequence));
+
+        this._rotationAmount = 0;
+        this.schedule(function()
+        {
+            this.setRotation(this._rotationAmount+=5);
+            if(this._rotationAmount > 360)
+                this._rotationAmount = 0;
+        }, 0.01, cc.REPEAT_FOREVER);
+        this.scheduleUpdate();
+
     },
 
     collisionRect:function(){
