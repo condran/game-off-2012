@@ -59,8 +59,8 @@ ZH._forksAway = 0;
         showFPS:false,
         frameRate:60,
         tag:'gameCanvas', //the dom element to run cocos2d on
-        engineDir:'cocos2d/',
-        //SingleEngineFile:'lib/Cocos2d-html5-v2.0.min.js',
+        //engineDir:'cocos2d/',
+        SingleEngineFile:'lib/Cocos2d-html5-v2.0.min.js',
         appFiles:[
             'src/resource.js',
             'src/Zombie.js',

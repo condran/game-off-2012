@@ -119,7 +119,11 @@ var GameLayer = cc.Layer.extend({
         }
         this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, -500));
         this._gameOverLabel.runAction(cc.FadeOut.create(0.5));
-        _menu.runAction(cc.FadeOut.create(0.5));
+        _menu.setEnabled(false);
+        _menu.runAction(cc.Sequence.create(cc.FadeOut.create(0.5), cc.CallFunc.create(this, function() {
+            var winSize = cc.Director.getInstance().getWinSize();
+            _menu.setPosition(cc.p(winSize.width / 2, -500));
+        })));
         ZH._currentGameState = ZH.GAME_STATE.PLAYING;
         ZH._forkCache =  20;
         ZH._forkFired = false;
@@ -165,14 +169,18 @@ var GameLayer = cc.Layer.extend({
                 this._gameOverLabel.setString("You Lose!");
                 this._gameOverLabel.runAction(cc.FadeIn.create(0.9));
                 this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2 + 100));
+                _menu.setEnabled(true);
+                _menu.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2));
                 _menu.runAction(cc.FadeIn.create(0.5));
             }
 
             if(ZH._forkCache > 0 && ZH.ZOMBIES.length == 0 && this._zombieCount == this._zombieMax) {
+                ZH._currentGameState = ZH.GAME_STATE.GAME_OVER;
                 this._gameOverLabel.setString("You Win!");
                 this._gameOverLabel.runAction(cc.FadeIn.create(0.9));
                 this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2 + 100));
-                ZH._currentGameState = ZH.GAME_STATE.GAME_OVER;
+                _menu.setEnabled(true);
+                _menu.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2));
                 _menu.runAction(cc.FadeIn.create(0.5));
             }
 
