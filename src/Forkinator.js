@@ -53,7 +53,7 @@ var Forkinator = cc.Sprite.extend({
             this.hitEffect = cc.ParticleSystemQuad.create(s_ForkinatorDead_plist);
             this.hitEffect.setPosition(pos);
             this._gameLayer.addChild(this.hitEffect, 10);
-
+            cc.AudioEngine.getInstance().playEffect(s_GameOver_mp3);
             var actions = [];
             actions[0] = cc.DelayTime.create(3.0);
             actions[2] = cc.FadeOut.create(1.0);
@@ -118,6 +118,7 @@ var Forkinator = cc.Sprite.extend({
             ZH.forkFired = true;
             ZH._forkCache--;
             ZH._forksAway--;
+            cc.AudioEngine.getInstance().playEffect(s_FireFork_mp3);
             this._gameLayer.addChild(fork);
         }
     }

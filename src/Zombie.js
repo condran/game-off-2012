@@ -42,7 +42,8 @@ var Zombie = cc.Sprite.extend({
     hit:function() {
         if (this._state == ZH.SPRITE_STATE.ACTIVE) {
             this._state = ZH.SPRITE_STATE.DEAD;
-            //ZH._forkCache++;
+            cc.AudioEngine.getInstance().stopAllEffects();
+            cc.AudioEngine.getInstance().playEffect(s_ZombieKill_mp3);
             this.stopAllActions();
             var actions = [];
             actions[0] = cc.FadeOut.create();

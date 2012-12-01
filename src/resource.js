@@ -8,6 +8,12 @@ var s_NewGameSelected = "res/new_game_pressed.png";
 var s_ZombieHit_plist = "res/ZombieHit.plist";
 var s_ForkinatorDead_plist = "res/ForkinatorDead.plist";
 
+var s_FireFork_mp3 = "res/fork_fire"
+var s_ZombieKill_mp3 = "res/kill_zombie"
+var s_GameOver_mp3 = "res/ship_game_over"
+var s_GameWon_mp3 = "res/game_over_won"
+var s_Background_mp3 = "res/ZHBackground"
+
 var g_resources = [
     //image
     {type:"image", src:s_ZombieHead},
@@ -25,6 +31,12 @@ var g_resources = [
     //tmx
 
     //bgm
+    {type:"bgm", src:s_Background_mp3},
 
     //effect
+    {type:"effect", src:s_FireFork_mp3},
+    {type:"effect", src:s_ZombieKill_mp3},
+    {type:"effect", src:s_GameOver_mp3},
+    {type:"effect", src:s_GameWon_mp3},
+
 ];

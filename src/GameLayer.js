@@ -68,6 +68,9 @@ var GameLayer = cc.Layer.extend({
         this._gameLayer.addChild(this._playerSprite, 10);
         this._playerSprite.setPosition(cc.p(-500,-500));
 
+        cc.AudioEngine.getInstance().setBackgroundMusicVolume(0.2);
+        cc.AudioEngine.getInstance().playBackgroundMusic(s_Background_mp3, true);
+
         // Add Enemies
         this._zombieCount = 0;
         this._zombies = [];
@@ -176,6 +179,7 @@ var GameLayer = cc.Layer.extend({
 
             if(ZH._forkCache > 0 && ZH.ZOMBIES.length == 0 && this._zombieCount == this._zombieMax) {
                 ZH._currentGameState = ZH.GAME_STATE.GAME_OVER;
+                cc.AudioEngine.getInstance().playEffect(s_GameWon_mp3);
                 this._gameOverLabel.setString("You Win!");
                 this._gameOverLabel.runAction(cc.FadeIn.create(0.9));
                 this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2 + 100));
