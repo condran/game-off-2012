@@ -161,6 +161,17 @@ var GameLayer = cc.Layer.extend({
                 this._playerSprite.setDefaultPosition();
             }
 
+            if(ZH._forkCache >= 0 && ZH.ZOMBIES.length == 0 && this._zombieCount == this._zombieMax) {
+                ZH._currentGameState = ZH.GAME_STATE.GAME_OVER;
+                cc.AudioEngine.getInstance().playEffect(s_GameWon_mp3);
+                this._gameOverLabel.setString("You Win!");
+                this._gameOverLabel.runAction(cc.FadeIn.create(0.9));
+                this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2 + 100));
+                _menu.setEnabled(true);
+                _menu.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2));
+                _menu.runAction(cc.FadeIn.create(0.5));
+            }
+
             if (this._playerSprite.isOffscreen()) {
                 ZH._currentGameState = ZH.GAME_STATE.GAME_OVER;
                 var i;
@@ -170,17 +181,6 @@ var GameLayer = cc.Layer.extend({
                     this._gameLayer.removeChild(zombie);
                 }
                 this._gameOverLabel.setString("You Lose!");
-                this._gameOverLabel.runAction(cc.FadeIn.create(0.9));
-                this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2 + 100));
-                _menu.setEnabled(true);
-                _menu.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2));
-                _menu.runAction(cc.FadeIn.create(0.5));
-            }
-
-            if(ZH._forkCache > 0 && ZH.ZOMBIES.length == 0 && this._zombieCount == this._zombieMax) {
-                ZH._currentGameState = ZH.GAME_STATE.GAME_OVER;
-                cc.AudioEngine.getInstance().playEffect(s_GameWon_mp3);
-                this._gameOverLabel.setString("You Win!");
                 this._gameOverLabel.runAction(cc.FadeIn.create(0.9));
                 this._gameOverLabel.setPosition(cc.p(this._winSize.width / 2, this._winSize.height / 2 + 100));
                 _menu.setEnabled(true);
@@ -236,6 +236,9 @@ var GameLayer = cc.Layer.extend({
         ZH.KEYS[e] = false;
         if (e == cc.KEY.space) {
             ZH._forksAway++;
+        }
+        if (e == cc.KEY.f) {
+            ZH._forkCache++;
         }
     },
     onTouchesBegan:function(touches, event){
